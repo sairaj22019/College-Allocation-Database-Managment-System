@@ -13,3 +13,44 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Category {
+  category_id   Int           @id @default(autoincrement())
+  category_name String
+  Seat_Matrix   Seat_Matrix[]
+}
+
+model College {
+  college_id   Int       @id @default(autoincrement())
+  college_name String
+  city         String
+  state        String
+  pincode      String
+  Program      Program[]
+}
+
+model Department {
+  department_id   Int       @id @default(autoincrement())
+  department_name String
+  Program         Program[]
+}
+
+model Program {
+  program_id    Int           @id @default(autoincrement())
+  deptID        Department    @relation(fields: [department_id], references: [department_id])
+  department_id Int
+  collegeID     College       @relation(fields: [college_id], references: [college_id])
+  college_id    Int
+  duration      String
+  Seat_Matrix   Seat_Matrix[]
+}
+
+model Seat_Matrix {
+  progID      Program  @relation(fields: [program_id], references: [program_id])
+  program_id  Int
+  categoryID  Category @relation(fields: [category_id], references: [category_id])
+  category_id Int
+  total_seats Int
+
+  @@id([program_id,category_id])
+}

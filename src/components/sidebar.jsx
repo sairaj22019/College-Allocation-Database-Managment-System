@@ -7,12 +7,12 @@ import { Home, Grid3X3, History, Settings, TrendingUp, User, Menu, X } from "luc
 import { Button } from "@/components/ui/button"
 
 const sidebarItems = [
-  { id: "home", label: "Home", icon: Home, href: "/" },
-  { id: "seatmatrix", label: "Seat Matrix", icon: Grid3X3, href: "/seatmatrix" },
-  { id: "previous-allocation", label: "Previous Seat Allocation", icon: History, href: "/previous-allocation" },
-  { id: "preference", label: "Preference", icon: Settings, href: "/preference" },
-  { id: "prediction", label: "Prediction", icon: TrendingUp, href: "/prediction" },
-  { id: "profile", label: "Profile", icon: User, href: "/profile" },
+  { id: "home", label: "Home", icon: Home, href: "/student" },
+  { id: "seatmatrix", label: "Seat Matrix", icon: Grid3X3, href: "/student/seatmatrix" },
+  { id: "previous-allocation", label: "Previous Seat Allocation", icon: History, href: "/student/previous-allocation" },
+  { id: "preference", label: "Preference", icon: Settings, href: "/student/preference" },
+  { id: "prediction", label: "Prediction", icon: TrendingUp, href: "/student/prediction" },
+  { id: "profile", label: "Profile", icon: User, href: "/student/profile" },
 ]
 
 export default function Sidebar() {
@@ -79,7 +79,7 @@ export default function Sidebar() {
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-40">
-          <div className="fixed inset-0 bg-black bg-opacity-50" onClick={toggleMobileMenu} />
+          <div className="fixed inset-0 bg-black/10" onClick={toggleMobileMenu} />
           <div className="fixed left-0 top-0 w-64 bg-white border-r border-blue-200 min-h-screen z-50">
             <SidebarContent />
           </div>

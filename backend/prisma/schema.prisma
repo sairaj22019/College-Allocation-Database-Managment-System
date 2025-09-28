@@ -14,8 +14,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id Int @id @default(autoincrement())
-  name String 
-  rank Int 
+enum gender {
+  MALE
+  FEMALE
+}
+
+enum Status {
+  Freeze
+  Float
+  Withdrawn
+}
+
+model Category {
+  id            Int    @id @default(autoincrement())
+  category_name String
+  User          User[]
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  full_name      String
+  email          String
+  isRegistered   Boolean  @default(false)
+  mobile_number  String
+  password       String // One problem you cann't directly make this as mobile_number only static values are accepted in the @default()--> method.
+  gender         gender
+  category_id    Category @relation(fields: [categoryId], references: [id])
+  general_rank   BigInt
+  category_rank  BigInt
+  current_status Status   @default(Float)
+  categoryId     Int
+}
+
+model Admin {
+  admin_id Int    @id @default(autoincrement())
+  email    String
+  password String
 }

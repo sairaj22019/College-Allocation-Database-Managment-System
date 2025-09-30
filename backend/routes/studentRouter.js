@@ -1,7 +1,7 @@
 import {Router} from "express"
-import {addStudentController} from "../controllers/studentController.js"
+import {addStudentController, addStudentPreferences} from "../controllers/studentController.js"
 const studentRouter=new Router();
 
 studentRouter.get('/add',addStudentController)
-
+studentRouter.post('/preferences',addStudentPreferences)
 export default studentRouter;

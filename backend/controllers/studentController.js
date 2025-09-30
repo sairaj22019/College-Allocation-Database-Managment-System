@@ -1,62 +1,3 @@
-// import fs from "fs";
-// import csv from "csv-parser"
-// import { PrismaClient } from "../generated/prisma/index.js";
-
-// const prisma=new PrismaClient();
-// const addStudentController=async (req,res)=>{
-//     let results=[];
-//     try {
-//         fs.createReadStream("generated_students_7000.csv")
-//         .pipe(csv())
-//         .on("data",(data)=>{
-//             data.gender=data.gender.toLowerCase();
-//             data.student_id=parseInt(data.student_id,10);
-//             data.student_id+=2500000;
-//             data.general_rank=parseInt(data.general_rank,10);
-//             data.category_rank=parseInt(data.category_rank,10);
-//             data.category_id=parseInt(data.category_id,10);
-//             data.isRegistered=false;
-//             data.password="";
-//             results.push(data);
-//         })
-//         .on ("end", ()=>{
-//             const batchSize=100;
-//             const insertBatches = async () => {
-//                 for (let i = 0; i < results.length; i += batchSize) {
-//                     const batch = results.slice(i, i + batchSize);
-//                     await prisma.student.createMany({
-//                         data: batch,
-//                         skipDuplicates: true
-//                     });
-//                 }
-//             };
-
-//             insertBatches()
-//                 .then(() => {
-//                     res.status(200).json({
-//                         success: true,
-//                         message: "Students added successfully"
-//                     });
-//                 })
-//                 .catch((error) => {
-//                     console.log(error);
-//                     res.status(500).json({
-//                         success: false,
-//                         message: "Error while adding students"
-//                     });
-//                 });
-//         })
-//     } catch (error) {
-//         console.log(error)
-//         return res.status(500).json({
-//             success:false,
-//             message:"Server error while adding students"
-//         })
-//     }
-// }
-
-// export {addStudentController}
-
 import fs from "fs";
 import csv from "csv-parser";
 import { PrismaClient } from "../generated/prisma/index.js";
@@ -68,7 +9,6 @@ const prisma = new PrismaClient();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Build absolute path to CSV in the same folder as the controller
 const csvPath = path.join(__dirname, "students.csv");
 const addStudentController = async (req, res) => {
   try {
@@ -131,4 +71,9 @@ const addStudentController = async (req, res) => {
   }
 };
 
-export { addStudentController };
+// This controller will take ,ist of choices and add into the users list. 
+const addStudentPreferences= async (req,res)=>{
+
+}
+
+export { addStudentController, addStudentPreferences };

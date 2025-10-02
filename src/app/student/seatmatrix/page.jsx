@@ -54,8 +54,8 @@ export default function SeatMatrixPage() {
   return (
     <div className="space-y-6">
       <Card className="border-blue-200">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-white border-b border-blue-100">
-          <CardTitle className="text-blue-800 flex items-center gap-2">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-white border-b border-blue-100 pt-5">
+          <CardTitle className="text-blue-800 flex items-center text-lg gap-2">
             <Grid3X3 className="h-5 w-5" />
             Seat Matrix
           </CardTitle>

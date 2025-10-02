@@ -1,108 +1,107 @@
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-// import { Button } from "@/components/ui/button"
-// import Link from "next/link"
-// import { Grid3X3, History, Settings, TrendingUp, School, BookOpen } from "lucide-react"
+"use client"
 
-// const quickActions = [
-//   {
-//     id: "seatmatrix",
-//     label: "View Seat Matrix",
-//     icon: Grid3X3,
-//     description: "Check available seats by college and department",
-//     href: "/seatmatrix",
-//   },
-//   {
-//     id: "previous-allocation",
-//     label: "Previous Allocations",
-//     icon: History,
-//     description: "View your allocation history",
-//     href: "/previous-allocation",
-//   },
-//   {
-//     id: "preference",
-//     label: "Set Preferences",
-//     icon: Settings,
-//     description: "Update your college preferences",
-//     href: "/preference",
-//   },
-//   {
-//     id: "prediction",
-//     label: "Rank Prediction",
-//     icon: TrendingUp,
-//     description: "Predict your chances",
-//     href: "/prediction",
-//   },
-// ]
+import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
-// export default function HomePage() {
-//   const recentAllocation = {
-//     roundNumber: 3,
-//     allocatedCollege: "IIT Delhi",
-//     department: "Computer Science and Engineering",
-//     status: "Allocated",
-//   }
+const features = [
+  // {
+  //   title: "Preferences & Allocation",
+  //   desc: "Students can add preferences and participate in the allocation process.",
+  //   href: "/preference",
+  // },
+  {
+    title: "Student Dashboard",
+    desc: "Manage activities, track progress, and view important updates in one place.",
+    href: "/dashboard",
+  },
+  {
+    title: "Seat Matrix",
+    desc: "View seat availability across institutes and departments with filters.",
+    href: "/seatmatrix",
+  },
+  {
+    title: "Previous Allocation",
+    desc: "Explore opening and closing ranks from previous allocations.",
+    href: "/previous-allocation",
+  },
+  {
+    title: "Add Preference",
+    desc: "Choose colleges and departments in your preferred order.",
+    href: "/preference",
+  },
+  {
+    title: "College Predictor",
+    desc: "Get predicted departments based on your rank.",
+    href: "/prediction",
+  },
+  {
+    title: "Profile",
+    desc: "View student details securely.",
+    href: "/profile",
+  },
+]
 
-//   return (
-//     <div className="space-y-6">
-//       <Card className="border-blue-200 bg-gradient-to-r from-blue-50 to-white">
-//         <CardHeader className="pb-3">
-//           <CardTitle className="text-blue-800 flex items-center gap-2">
-//             <School className="h-5 w-5" />
-//             Recent Seat Allocation - Round {recentAllocation.roundNumber}
-//           </CardTitle>
-//         </CardHeader>
-//         <CardContent className="space-y-3">
-//           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-//             <div className="bg-white p-4 rounded-lg border border-blue-100">
-//               <p className="text-sm text-blue-600 font-medium">Round Number</p>
-//               <p className="text-2xl font-bold text-blue-800">{recentAllocation.roundNumber}</p>
-//             </div>
-//             <div className="bg-white p-4 rounded-lg border border-blue-100">
-//               <p className="text-sm text-blue-600 font-medium">Allocated College</p>
-//               <p className="text-lg font-semibold text-gray-800">{recentAllocation.allocatedCollege}</p>
-//             </div>
-//             <div className="bg-white p-4 rounded-lg border border-blue-100">
-//               <p className="text-sm text-blue-600 font-medium">Department</p>
-//               <p className="text-lg font-semibold text-gray-800">{recentAllocation.department}</p>
-//             </div>
-//           </div>
-//           <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-//             <p className="text-green-800 font-medium">Status: {recentAllocation.status}</p>
-//           </div>
-//         </CardContent>
-//       </Card>
+export default function LandingPage() {
+  return (
+    <div className="min-h-dvh bg-background text-foreground">
+      {/* Top Navigation */}
+      <header className="border-b border-border">
+        <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+          <Link href="/" className="font-semibold tracking-tight">
+            <span className="text-pretty text-lg  text-blue-600">College Connect</span>
+          </Link>
+          <Button asChild>
+            <Link href="/login">Login</Link>
+          </Button>
+        </nav>
+      </header>
 
-//       <Card>
-//         <CardHeader>
-//           <CardTitle className="text-gray-800 flex items-center gap-2">
-//             <BookOpen className="h-5 w-5" />
-//             Quick Actions
-//           </CardTitle>
-//         </CardHeader>
-//         <CardContent>
-//           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//             {quickActions.map((action) => {
-//               const IconComponent = action.icon
-//               return (
-//                 <Link key={action.id} href={action.href}>
-//                   <Button
-//                     variant="outline"
-//                     className="h-auto p-4 justify-start border-blue-200 hover:bg-blue-50 hover:border-blue-300 bg-transparent w-full"
-//                   >
-//                     <div className="flex items-start gap-3 text-left">
-//                       <IconComponent className="h-5 w-5 text-blue-600 mt-0.5" />
-//                       <div>
-//                         <p className="font-medium text-gray-800">{action.label}</p>
-//                         <p className="text-sm text-gray-600 mt-1">{action.description}</p>
-//                       </div>
-//                     </div>
-//                   </Button>
-//                 </Link>
-//               )
-//             })}
-//           </div>
-//         </CardContent>
-//       </Card>
-//     </div>
-//   )
-// }
+      {/* Hero Section */}
+      <main>
+        <section className="mx-auto max-w-6xl px-4 py-10 md:py-10">
+          <div className="mx-auto max-w-3xl text-center">
+            <h1 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
+              Smart College Allocation Made Simple
+            </h1>
+            <p className="mt-3 text-pretty text-sm text-muted-foreground md:text-base">
+              Plan your preferences, explore seat matrices, review past allocations, and use our predictor — all in one
+              student-friendly dashboard.
+            </p>
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <Button asChild>
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href="/seatmatrix">Explore Seat Matrix</Link>
+              </Button>
+            </div>
+          </div>
+
+          {/* Features Grid */}
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((f) => (
+              <Link key={f.title} href={f.href}>
+                <Card className="h-full">
+                  <CardHeader>
+                    <CardTitle className="text-pretty text-base md:text-lg">{f.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-pretty text-sm text-muted-foreground">{f.desc}</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      {/* Footer (simple, consistent)
+      <footer className="border-t border-border">
+        <div className="mx-auto max-w-6xl px-4 py-6 text-center text-xs text-muted-foreground">
+          © {new Date().getFullYear()} College Allocation. All rights reserved.
+        </div>
+      </footer> */}
+    </div>
+  )
+}

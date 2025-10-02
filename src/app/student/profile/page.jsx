@@ -7,8 +7,8 @@ import { User, Lock } from "lucide-react"
 export default function ProfilePage() {
   return (
     <div className="space-y-6">
-      <Card className="border-blue-200">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-white border-b border-blue-100">
+      <Card className="border-blue-200 p-0">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-white border-b border-blue-100 pt-5 mt-0 rounded-t-xl">
           <CardTitle className="text-blue-800 flex items-center gap-2">
             <User className="h-5 w-5" />
             Student Profile
@@ -75,8 +75,8 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      <Card className="border-blue-200">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-white border-b border-blue-100">
+      <Card className="border-blue-200 p-0">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-white border-b border-blue-100 pt-5 mt-0 rounded-t-xl">
           <CardTitle className="text-blue-800 flex items-center gap-2">
             <Lock className="h-5 w-5" />
             Change Password

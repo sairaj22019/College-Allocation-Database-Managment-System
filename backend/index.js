@@ -3,6 +3,7 @@ import cors from "cors";
 import { PrismaClient } from "./generated/prisma/index.js";
 import categoryRouter from "./routes/categoryRouter.js";
 import studentRouter from "./routes/studentRouter.js";
+import collegeRouter from "./routes/collegeRouter.js";
 const app = new express();
 const PORT = process.env.PORT || 4000;
 
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 
 app.use('/category',categoryRouter);
 app.use('/student',studentRouter);
+app.use('/college',collegeRouter)
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

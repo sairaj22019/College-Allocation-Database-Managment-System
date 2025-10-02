@@ -1,12 +1,10 @@
-import path from "path";
-import { fileURLToPath } from "url";
 import { PrismaClient } from "../generated/prisma/index.js";
-import csv from "csv-parser";
-import fs from "fs";
+
 const prisma = new PrismaClient();
 
 const getAllCollegeInfo = async (req, res) => {
   try {
+    console.log("hello")
     const allCollege = await prisma.college.findMany();
     let namesList = [];
     for (const college of allCollege) {
@@ -30,6 +28,7 @@ const getAllCollegeInfo = async (req, res) => {
 
 const editCollegeInfo = async (req, res) => {
   try {
+    console.log("Hii")
     const collegeData = req.body;
   } catch (error) {
     console.log(error);

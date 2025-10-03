@@ -417,6 +417,9 @@ export default function SeatMatrixPage() {
   const [selectedInstitute, setSelectedInstitute] = useState("")
   const [selectedDepartment, setSelectedDepartment] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("")
+  const [selectedInstituteArray, setSelectedInstituteArray] = useState([])
+  const [selectedDepartmentArray, setSelectedDepartmentArray] = useState([])
+  const [selectedCategoryArray, setSelectedCategoryArray] = useState([])
   const [seatData, setSeatData] = useState([])
   const [showResults, setShowResults] = useState(false)
 
@@ -438,10 +441,6 @@ export default function SeatMatrixPage() {
         console.error("Error fetching institutes:", error)
       }
     }
-    fetchInstitutes()
-  }, [])
-  
-  useEffect(() => {
     const fetchDepartments = async () => {
       try {
         const res = await fetch("http://localhost:9000/department/all")
@@ -453,10 +452,6 @@ export default function SeatMatrixPage() {
         console.error("Error fetching institutes:", error)
       }
     }
-    fetchDepartments()
-  }, [])
-  
-  useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await fetch("http://localhost:9000/category/all")
@@ -468,13 +463,45 @@ export default function SeatMatrixPage() {
         console.error("Error fetching institutes:", error)
       }
     }
+
+    fetchInstitutes()
+    fetchDepartments()
     fetchCategories()
   }, [])
+  
+
 
   const handleSubmit = () => {
     if (selectedInstitute && selectedDepartment && selectedCategory) {
-      const data = generateSeatData(selectedInstitute, selectedDepartment, selectedCategory)
-      setSeatData(data)
+      setSelectedCategoryArray([])
+      setSelectedInstituteArray([])
+      setSelectedDepartmentArray([])
+      // const data = generateSeatData(selectedInstitute, selectedDepartment, selectedCategory)
+      if(selectedInstitute==="all"){
+        institutes.forEach((inst)=>{
+          setSelectedInstituteArray((prev) => [...prev, inst.id]);
+        })
+      }else{
+        setSelectedInstituteArray([selectedInstitute]);
+      }
+
+      if(selectedDepartment==="all"){
+        departments.forEach((dept)=>{
+          setSelectedDepartmentArray((prev) => [...prev, dept.id]);
+        })
+      }else{
+        setSelectedDepartmentArray([selectedDepartment]);
+      }
+
+      if(selectedCategory==="all"){
+        categories.forEach((cat)=>{
+          setSelectedCategoryArray((prev) => [...prev, cat.id]);
+        })
+      }else{
+        setSelectedCategoryArray([selectedCategory]);
+      }
+
+      // setSeatData(data)
       setShowResults(true)
     }
   }
@@ -509,6 +536,7 @@ export default function SeatMatrixPage() {
                     <SelectValue placeholder="Choose institute" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
                     {institutes.map((inst) => (
                       <SelectItem key={inst.id} value={String(inst.id)}>
                         {inst.name}
@@ -528,9 +556,9 @@ export default function SeatMatrixPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All</SelectItem>
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <SelectItem key={i} value={`dept${i + 1}`}>
-                        dept{i + 1}
+                    {departments.map((dept) => (
+                      <SelectItem key={dept.id} value={String(dept.id)}>
+                        {dept.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -548,9 +576,9 @@ export default function SeatMatrixPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All</SelectItem>
-                    {Array.from({ length: 16 }, (_, i) => (
-                      <SelectItem key={i} value={`${i + 1}`}>
-                        {i + 1}
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={String(cat.id)}>
+                        {cat.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -566,6 +594,7 @@ export default function SeatMatrixPage() {
               >
                 Submit
               </Button>
+
             </div>
 
             {showResults && (

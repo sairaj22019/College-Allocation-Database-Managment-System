@@ -91,6 +91,15 @@ const getSeatMatrixData = async (req, res) => {
       });
     }
   
+for(let i=0;i<category_id.length;i++){
+  category_id[i]=parseInt(category_id[i],10);
+}
+for(let i=0;i<department_id.length;i++){
+  department_id[i]=parseInt(department_id[i],10);
+}
+for(let i=0;i<college_id.length;i++){
+  college_id[i]=parseInt(college_id[i],10);
+}
 
 const programs = await prisma.program.findMany({
   where: {

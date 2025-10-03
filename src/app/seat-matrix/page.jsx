@@ -6,43 +6,20 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Grid3X3 } from "lucide-react"
 
-const generateSeatData = (institute, department, category) => {
-  const data = []
-  const institutes = institute === "all" ? Array.from({ length: 10 }, (_, i) => `IIT${i + 1}`) : [institute]
-  const departments = department === "all" ? Array.from({ length: 5 }, (_, i) => `dept${i + 1}`) : [department]
-  const categories = category === "all" ? Array.from({ length: 16 }, (_, i) => `${i + 1}`) : [category]
-
-  institutes.forEach((inst) => {
-    departments.forEach((dept) => {
-      categories.forEach((cat) => {
-        data.push({
-          institute: inst,
-          department: dept,
-          category: cat,
-          seats: Math.floor(Math.random() * 50) + 10, // Random seats between 10-59
-        })
-      })
-    })
-  })
-  return data
-}
-
 export default function SeatMatrixPage() {
   const [selectedInstitute, setSelectedInstitute] = useState("")
   const [selectedDepartment, setSelectedDepartment] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("")
-  const [selectedInstituteArray, setSelectedInstituteArray] = useState([])
-  const [selectedDepartmentArray, setSelectedDepartmentArray] = useState([])
-  const [selectedCategoryArray, setSelectedCategoryArray] = useState([])
   const [seatData, setSeatData] = useState([])
   const [showResults, setShowResults] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  // NEW: State for fetched institutes
+  // NEW: State for fetched lists
   const [institutes, setInstitutes] = useState([])
   const [departments, setDepartments] = useState([])
   const [categories, setCategories] = useState([])
 
-  // Fetch institute list from backend
+  // Fetch dropdown data from backend
   useEffect(() => {
     const fetchInstitutes = async () => {
       try {
@@ -55,6 +32,7 @@ export default function SeatMatrixPage() {
         console.error("Error fetching institutes:", error)
       }
     }
+
     const fetchDepartments = async () => {
       try {
         const res = await fetch("http://localhost:9000/department/all")
@@ -63,9 +41,10 @@ export default function SeatMatrixPage() {
           setDepartments(data.namesList)
         }
       } catch (error) {
-        console.error("Error fetching institutes:", error)
+        console.error("Error fetching departments:", error)
       }
     }
+
     const fetchCategories = async () => {
       try {
         const res = await fetch("http://localhost:9000/category/all")
@@ -74,7 +53,7 @@ export default function SeatMatrixPage() {
           setCategories(data.namesList)
         }
       } catch (error) {
-        console.error("Error fetching institutes:", error)
+        console.error("Error fetching categories:", error)
       }
     }
 
@@ -82,41 +61,66 @@ export default function SeatMatrixPage() {
     fetchDepartments()
     fetchCategories()
   }, [])
-  
 
+  const handleSubmit = async () => {
+    setLoading(true)
+    try {
+      if (selectedInstitute && selectedDepartment && selectedCategory) {
+        // ✅ Build arrays locally instead of relying on async setState
+        let instituteArray = []
+        let departmentArray = []
+        let categoryArray = []
 
-  const handleSubmit = () => {
-    if (selectedInstitute && selectedDepartment && selectedCategory) {
-      setSelectedCategoryArray([])
-      setSelectedInstituteArray([])
-      setSelectedDepartmentArray([])
-      // const data = generateSeatData(selectedInstitute, selectedDepartment, selectedCategory)
-      if(selectedInstitute==="all"){
-        institutes.forEach((inst)=>{
-          setSelectedInstituteArray((prev) => [...prev, inst.id]);
+        if (selectedInstitute === "all") {
+          instituteArray = institutes.map((inst) => Number.parseInt(inst.id, 10))
+        } else {
+          instituteArray = [Number.parseInt(selectedInstitute, 10)]
+        }
+
+        if (selectedDepartment === "all") {
+          departmentArray = departments.map((dept) => Number.parseInt(dept.id, 10))
+        } else {
+          departmentArray = [Number.parseInt(selectedDepartment, 10)]
+        }
+
+        if (selectedCategory === "all") {
+          categoryArray = categories.map((cat) => Number.parseInt(cat.id, 10))
+        } else {
+          categoryArray = [Number.parseInt(selectedCategory, 10)]
+        }
+
+        // 🔥 Now send correct arrays directly
+        const res = await fetch("http://localhost:9000/seatMatrix/data", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            college_id: instituteArray,
+            department_id: departmentArray,
+            category_id: categoryArray,
+          }),
         })
-      }else{
-        setSelectedInstituteArray([selectedInstitute]);
-      }
 
-      if(selectedDepartment==="all"){
-        departments.forEach((dept)=>{
-          setSelectedDepartmentArray((prev) => [...prev, dept.id]);
-        })
-      }else{
-        setSelectedDepartmentArray([selectedDepartment]);
-      }
+        const data = await res.json()
+        console.log(data)
 
-      if(selectedCategory==="all"){
-        categories.forEach((cat)=>{
-          setSelectedCategoryArray((prev) => [...prev, cat.id]);
-        })
-      }else{
-        setSelectedCategoryArray([selectedCategory]);
-      }
+        if (data.success && data.data) {
+          const mappedData = data.data.map((item) => ({
+            institute: institutes.find((i) => i.id === item.college_id)?.name || `College ${item.college_id}`,
+            department: departments.find((d) => d.id === item.department_id)?.name || `Dept ${item.department_id}`,
+            category: categories.find((c) => c.id === item.category_id)?.name || `Cat ${item.category_id}`,
+            seats: item.total_seats,
+          }))
+          setSeatData(mappedData)
+        }
 
-      // setSeatData(data)
-      setShowResults(true)
+        setShowResults(true)
+      }
+    } catch (error) {
+      console.error("Error fetching seat matrix:", error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -142,9 +146,7 @@ export default function SeatMatrixPage() {
             <div className="space-y-4">
               {/* Institute Dropdown */}
               <div className="grid grid-cols-4">
-                <label className="text-sm font-medium text-gray-700 col-span-1 my-auto">
-                  Select Institute
-                </label>
+                <label className="text-sm font-medium text-gray-700 col-span-1 my-auto">Select Institute</label>
                 <Select value={selectedInstitute} onValueChange={setSelectedInstitute}>
                   <SelectTrigger className="border-blue-200 focus:border-blue-400 w-full col-span-3">
                     <SelectValue placeholder="Choose institute" />
@@ -159,11 +161,10 @@ export default function SeatMatrixPage() {
                   </SelectContent>
                 </Select>
               </div>
+
               {/* Department Dropdown */}
               <div className="grid grid-cols-4">
-                <label className="text-sm font-medium text-gray-700 col-span-1 my-auto">
-                  Select Department
-                </label>
+                <label className="text-sm font-medium text-gray-700 col-span-1 my-auto">Select Department</label>
                 <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
                   <SelectTrigger className="border-blue-200 focus:border-blue-400 w-full col-span-3">
                     <SelectValue placeholder="Choose department" />
@@ -181,9 +182,7 @@ export default function SeatMatrixPage() {
 
               {/* Category Dropdown */}
               <div className="grid grid-cols-4">
-                <label className="text-sm font-medium text-gray-700 col-span-1 my-auto">
-                  Select Category
-                </label>
+                <label className="text-sm font-medium text-gray-700 col-span-1 my-auto">Select Category</label>
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                   <SelectTrigger className="border-blue-200 focus:border-blue-400 w-full col-span-3">
                     <SelectValue placeholder="Choose category" />
@@ -203,12 +202,29 @@ export default function SeatMatrixPage() {
             <div className="flex justify-center">
               <Button
                 onClick={handleSubmit}
-                disabled={!selectedInstitute || !selectedDepartment || !selectedCategory}
+                disabled={!selectedInstitute || !selectedDepartment || !selectedCategory || loading}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2"
               >
-                Submit
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="h-4 w-4 animate-spin text-white" viewBox="0 0 24 24" aria-hidden="true">
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                    </svg>
+                    Loading...
+                  </span>
+                ) : (
+                  "Submit"
+                )}
               </Button>
-
             </div>
 
             {showResults && (
@@ -259,9 +275,7 @@ export default function SeatMatrixPage() {
                     </tbody>
                   </table>
                 </div>
-                <div className="text-sm text-gray-600 text-center">
-                  Showing {seatData.length} results
-                </div>
+                <div className="text-sm text-gray-600 text-center">Showing {seatData.length} results</div>
               </div>
             )}
           </div>

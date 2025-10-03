@@ -74,4 +74,14 @@ const addSeatMatrixController = async (req, res) => {
   }
 };
 
-export { addSeatMatrixController };
+const getSeatMatrixData=async(req,res)=>{
+  try {
+    const data=req.body;
+    
+  } catch (error) {
+    
+  }
+}
+
+
+export { addSeatMatrixController, getSeatMatrixData };

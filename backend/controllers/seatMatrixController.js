@@ -74,14 +74,74 @@ const addSeatMatrixController = async (req, res) => {
   }
 };
 
-const getSeatMatrixData=async(req,res)=>{
+const getSeatMatrixData = async (req, res) => {
   try {
-    const data=req.body;
-    
-  } catch (error) {
-    
-  }
-}
+    const data = req.body;
+    if (
+      !data.category_id ||
+      !data.college_id ||
+      !data.department_id ||
+      !Array.isArray(data.category_id) ||
+      !Array.isArray(data.college_id) ||
+      !Array.isArray(data.department_id)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Provide all the necessary fields",
+      });
+    }
+  
 
+const programs = await prisma.program.findMany({
+  where: {
+    college_id: { in: data.college_id },
+    department_id: { in: data.department_id },
+  },
+  select: {
+    program_id: true,
+    college_id: true,
+    department_id: true,
+  },
+});
+
+const programIds = programs.map((p) => p.program_id);
+
+const seatMatrices = await prisma.seat_Matrix.findMany({
+  where: {
+    program_id: { in: programIds },
+    category_id: { in: data.category_id },
+  },
+  select: {
+    program_id: true,
+    category_id: true,
+    total_seats: true,
+  },
+});
+
+const result = seatMatrices.map((sm) => {
+  const prog = programs.find((p) => p.program_id === sm.program_id);
+  return {
+    college_id: prog?.college_id,
+    department_id: prog?.department_id,
+    program_id: sm.program_id,
+    category_id: sm.category_id,
+    total_seats: sm.total_seats,
+  };
+});
+
+    return res.status(200).json({
+      success: true,
+      message: "Seat matric data fetched",
+      data: result,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching seat matrix data",
+      error,
+    });
+  }
+};
 
 export { addSeatMatrixController, getSeatMatrixData };

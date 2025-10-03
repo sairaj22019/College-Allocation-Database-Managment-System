@@ -54,8 +54,8 @@ const addPreferences = async (req, res) => {
       });
     }
 
+    // Step 1: Map input preferences to program IDs
     let results = [];
-
     for (const pref of data.preferences) {
       const prog = await prisma.program.findFirst({
         where: {
@@ -70,6 +70,7 @@ const addPreferences = async (req, res) => {
       }
     }
 
+    // Step 2: Upsert (Insert or Update) preferences
     let i = 1;
     for (const programId of results) {
       await prisma.preferences.upsert({
@@ -91,6 +92,16 @@ const addPreferences = async (req, res) => {
       i++;
     }
 
+    // Step 3: Delete any extra preferences beyond the new list length
+    await prisma.preferences.deleteMany({
+      where: {
+        student_id: data.studentId,
+        preference_number: {
+          gt: results.length, // delete all preferences with pref_no > new length
+        },
+      },
+    });
+
     return res.json({
       success: true,
       message: "Preferences updated successfully",
@@ -105,5 +116,7 @@ const addPreferences = async (req, res) => {
   }
 };
 
-
 export { getPreferences, addPreferences };
+
+
+

@@ -8,8 +8,8 @@ const getAllCollegeInfo = async (req, res) => {
     const allCollege = await prisma.college.findMany();
     let namesList = [];
     for (const college of allCollege) {
-      if (college && college.name) {
-        namesList.push(college.name);
+      if (college && college.college_name) {
+        namesList.push({name:college.college_name,id:college.college_id});
       }
     }
     return res.status(200).json({

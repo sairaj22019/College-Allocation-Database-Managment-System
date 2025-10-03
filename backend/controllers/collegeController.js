@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 
 const getAllCollegeInfo = async (req, res) => {
   try {
-    console.log("hello")
     const allCollege = await prisma.college.findMany();
     let namesList = [];
     for (const college of allCollege) {

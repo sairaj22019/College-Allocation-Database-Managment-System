@@ -7,6 +7,7 @@ import collegeRouter from "./routes/collegeRouter.js";
 import departmentRouter from "./routes/departmentRouter.js";
 import programRouter from "./routes/programRouter.js";
 import seatMatrixRouter from "./routes/seatMatrixRouter.js";
+import prefernceRouter from "./routes/preferenceRouter.js";
 const app = new express();
 const PORT = process.env.PORT || 9000;
 
@@ -30,7 +31,7 @@ app.use('/college',collegeRouter)
 app.use('/department',departmentRouter)
 app.use('/program',programRouter)
 app.use('/seatMatrix',seatMatrixRouter)
-
+app.use('/preference',prefernceRouter)
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

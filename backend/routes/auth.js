@@ -1,4 +1,5 @@
 
+
 import express from "express";
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "../generated/prisma/index.js"; 
@@ -26,7 +27,7 @@ router.post("/login", async (req, res) => {
           where: { email },
           data: {
             password: hashedPassword,
-            isRegistered: true,
+            // isRegistered: true,
           },
         });
 
